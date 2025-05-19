@@ -1,0 +1,59 @@
+import 'package:flutter/material.dart';
+
+void main() {
+  final col = Column(
+    mainAxisAlignment: MainAxisAlignment.center,
+    crossAxisAlignment: CrossAxisAlignment.center,
+    children: const [
+      Text('レモン'),
+      Text('リンゴ'),
+      Text('ブドウ'),
+    ],
+  );
+
+  final img = Column(
+    mainAxisAlignment: MainAxisAlignment.center,
+    crossAxisAlignment: CrossAxisAlignment.center,
+    children: [
+      Image.asset(
+        'assets/images/saku.png'
+        ),
+      Image.network(
+        'https://flutter-image-network.web.app/inu.jpeg'
+      )
+    ],
+  );
+
+  final con = Container(
+    color: Colors.deepOrange,
+    width: 500,
+    height: 400,
+    child: col,
+    alignment: Alignment.centerLeft,
+    padding: EdgeInsets.fromLTRB(20,10,0,100),
+    margin: EdgeInsets.all(20),
+  );
+
+  final rowItems = Row(
+    mainAxisSize: MainAxisSize.min,
+    children: [
+      col, col, col
+    ],
+  );
+
+  final colItems = Column(
+    mainAxisSize: MainAxisSize.min,
+    children: [
+      col, col, col
+    ],
+  );
+
+  final a = MaterialApp(
+    home: Scaffold(
+      body: Center(
+        child: con,
+      ),
+    ),
+  );
+  runApp(a);
+}
