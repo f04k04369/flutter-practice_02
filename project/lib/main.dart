@@ -1,6 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:project/banana_counter.dart';
 
 void main() {
+
+final bananaCounter = BananaCounter(
+  number: 888,
+
+);
+
   final col = Column(
     mainAxisAlignment: MainAxisAlignment.center,
     crossAxisAlignment: CrossAxisAlignment.center,
@@ -51,7 +58,7 @@ void main() {
   final a = MaterialApp(
     home: Scaffold(
       body: Center(
-        child: con,
+        child: bananaCounter,
       ),
     ),
   );
