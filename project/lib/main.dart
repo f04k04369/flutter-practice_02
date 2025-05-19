@@ -3,10 +3,23 @@ import 'package:project/banana_counter.dart';
 
 void main() {
 
-final bananaCounter = BananaCounter(
-  number: 888,
+  xxxx() {
+    debugPrint('これから通信を始めます');
+  }
 
-);
+  final button = ElevatedButton(
+    onPressed: xxxx, 
+    child: Text('おしてみて') ,
+
+    style: ElevatedButton.styleFrom(
+      backgroundColor: Colors.green,
+    ),
+    );
+
+  final bananaCounter = BananaCounter(
+    number: 888,
+
+  );
 
   final col = Column(
     mainAxisAlignment: MainAxisAlignment.center,
@@ -58,7 +71,8 @@ final bananaCounter = BananaCounter(
   final a = MaterialApp(
     home: Scaffold(
       body: Center(
-        child: bananaCounter,
+        child: 
+        button,
       ),
     ),
   );
