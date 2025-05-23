@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:project/page_a.dart';
-import 'package:project/page_b.dart';
-import 'package:project/page_c.dart';
 
 
 // アプリ全体
@@ -18,12 +15,22 @@ main() {
 }
 
 // プロバイダー
-final indexProvider = StateProvider(
+final isOnProvider = StateProvider(
   (ref) {
 // 変化させたいデータ
-    return 0;
+    return true;
   },
 );
+
+// スライダーの数値
+final valueProvider = StateProvider((ref) {
+  return 0.0;
+});
+
+// レンジスライダーの範囲
+final rangeProvider = StateProvider((ref) {
+  return const RangeValues(0.0, 1.0);
+});
 
 // 画面全体を定義
 class Root extends ConsumerWidget {
@@ -32,49 +39,66 @@ class Root extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref)  {
 
-    final index = ref.watch(indexProvider);
+    // トグルスイッチ
+    final isOn = ref.watch(isOnProvider);
 
-  // アイコン取得
-    const items = [
-      BottomNavigationBarItem(
-        icon: Icon(Icons.person),
-        label: 'アイテムA'
-      ),
-      BottomNavigationBarItem(
-        icon: Icon(Icons.home),
-        label: 'アイテムB'
-      ),
-      BottomNavigationBarItem(
-        icon: Icon(Icons.settings),
-        label: 'アイテムC'
-      ),
-
-    ];
-
-    // ボトムナビゲーションバーの設定
-    final bar = BottomNavigationBar(
-      items: items,
-      backgroundColor: Colors.red,
-      selectedItemColor: Colors.white,
-      unselectedItemColor: Colors.black,
-      currentIndex: index,
-      onTap: (index) {
-        // タップされたときにインデックスを変更する
-        ref.read(indexProvider.notifier).state = index;
+    final toggleSwith = Switch(
+      value: isOn,
+      onChanged: (isOn) {
+        ref.read(isOnProvider.notifier).state = isOn;
       },
+      activeColor: Colors.blue,
+      activeTrackColor: Colors.green,
+      inactiveThumbColor: Colors.black,
+      inactiveTrackColor: Colors.grey,
     );
 
-    // ウィジェット定義
-    const pages = [
-      pageA(),
-      PageB(),
-      PageC(),
-    ];
+    // スライダー
+    final value = ref.watch(valueProvider);
+    final slider = Slider(
+      value: value,
+      onChanged: (value) {
+        ref.read(valueProvider.notifier).state = value;
+      },
 
-    // 画面定義
+      thumbColor: Colors.orange,
+      activeColor: Colors.green,
+      inactiveColor: Colors.black12,
+    );
+
+    // 赤色のコンテナ
+    final redBox = Container(
+      color: Colors.red,
+      height: 20,
+      width: value * 300,
+    );
+
+
+    // レンジスライダー
+    final range = ref.watch(rangeProvider);
+    final rangeSlider = RangeSlider(
+      values: range,
+      onChanged: (range) {
+        ref.read(rangeProvider.notifier).state = range;
+      },
+
+      activeColor: Colors.green,
+      inactiveColor: Colors.grey,
+    );
+
+    // 画面を返す
     return Scaffold(
-      body: pages[index],
-      bottomNavigationBar: bar,
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            toggleSwith,
+            slider,
+            rangeSlider,
+            redBox,
+          ],
+        ),
+      ),
     );
   }
 }
