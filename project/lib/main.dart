@@ -15,22 +15,19 @@ main() {
 }
 
 // プロバイダー
-final isOnProvider = StateProvider(
+final radioIdProvider = StateProvider<String?>(
   (ref) {
-// 変化させたいデータ
-    return true;
+// 最初はどれも選ばれていないのでnull
+    return null;
   },
 );
 
-// スライダーの数値
-final valueProvider = StateProvider((ref) {
-  return 0.0;
-});
-
-// レンジスライダーの範囲
-final rangeProvider = StateProvider((ref) {
-  return const RangeValues(0.0, 1.0);
-});
+// 選ばれたチェックボックスのIDたち
+final checkdedIdsProvider = StateProvider<Set<String?>>(
+  (ref) {
+    return {};
+  }
+);
 
 // 画面全体を定義
 class Root extends ConsumerWidget {
@@ -39,52 +36,69 @@ class Root extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref)  {
 
-    // トグルスイッチ
-    final isOn = ref.watch(isOnProvider);
+    // ラジオボタンIDに合わせて画面を変化
+    final radioId = ref.watch(radioIdProvider);
+    // チェックボックスIDたちに合わせて画面を変化
+    final checkedIds = ref.watch(checkdedIdsProvider);
+ 
+    // ラジオボタンを押された時の関数
+    void onChangedRadio(String? id) {
+      ref.read(radioIdProvider.notifier).state = id;
+    }
 
-    final toggleSwith = Switch(
-      value: isOn,
-      onChanged: (isOn) {
-        ref.read(isOnProvider.notifier).state = isOn;
-      },
-      activeColor: Colors.blue,
-      activeTrackColor: Colors.green,
-      inactiveThumbColor: Colors.black,
-      inactiveTrackColor: Colors.grey,
+    // チェックボックスを押された時の関数
+    void onChangedCheckbox(String? id) {
+      final newSet = Set.of(checkedIds);
+
+      if (newSet.contains(id)) {
+        // すでにチェックされていたら取り除く
+        newSet.remove(id);
+      } else {
+        // まだチェックされていなければ追加
+        newSet.add(id);
+      }
+      ref.read(checkdedIdsProvider.notifier).state = newSet;
+    }
+
+    // ボタンたちを定義する
+    final col = Column(
+      children: [
+        RadioListTile(
+          value: 'A', 
+          groupValue: radioId, 
+          onChanged: onChangedRadio,
+          title: const Text('ラジオボタンA'),
+        ),        RadioListTile(
+          value: 'B', 
+          groupValue: radioId, 
+          onChanged: onChangedRadio,
+          title: const Text('ラジオボタンB'),
+        ),
+        RadioListTile(
+          value: 'C', 
+          groupValue: radioId, 
+          onChanged: onChangedRadio,
+          title: const Text('ラジオボタンC'),
+        ),
+        CheckboxListTile(
+          value: checkedIds.contains('A'), 
+          onChanged: (check) => onChangedCheckbox('A'),
+          title: const Text('チェックボックスA'),
+        ),        CheckboxListTile(
+          value: checkedIds.contains('B'), 
+          onChanged: (check) => onChangedCheckbox('B'),
+          title: const Text('チェックボックスB'),
+        ),
+        CheckboxListTile(
+          value: checkedIds.contains('C'), 
+          onChanged: (check) => onChangedCheckbox('C'),
+          title: const Text('チェックボックスC'),
+        ),
+
+
+      ],
     );
 
-    // スライダー
-    final value = ref.watch(valueProvider);
-    final slider = Slider(
-      value: value,
-      onChanged: (value) {
-        ref.read(valueProvider.notifier).state = value;
-      },
-
-      thumbColor: Colors.orange,
-      activeColor: Colors.green,
-      inactiveColor: Colors.black12,
-    );
-
-    // 赤色のコンテナ
-    final redBox = Container(
-      color: Colors.red,
-      height: 20,
-      width: value * 300,
-    );
-
-
-    // レンジスライダー
-    final range = ref.watch(rangeProvider);
-    final rangeSlider = RangeSlider(
-      values: range,
-      onChanged: (range) {
-        ref.read(rangeProvider.notifier).state = range;
-      },
-
-      activeColor: Colors.green,
-      inactiveColor: Colors.grey,
-    );
 
     // 画面を返す
     return Scaffold(
@@ -92,10 +106,14 @@ class Root extends ConsumerWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            toggleSwith,
-            slider,
-            rangeSlider,
-            redBox,
+            col,
+            ElevatedButton(
+              onPressed: () {
+                debugPrint(radioId);
+                debugPrint(checkedIds.toString());
+              }, 
+              child: const Text('OK')
+            ),
           ],
         ),
       ),
