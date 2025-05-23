@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:percent_indicator/flutter_percent_indicator.dart';
 
 
 // アプリ全体
@@ -14,20 +15,14 @@ main() {
   runApp(scope);
 }
 
-// プロバイダー
-final radioIdProvider = StateProvider<String?>(
+// どのくらい進んだかを表す　パーセント
+final percentProvider = StateProvider(
   (ref) {
 // 最初はどれも選ばれていないのでnull
-    return null;
+    return 0.00;
   },
 );
 
-// 選ばれたチェックボックスのIDたち
-final checkdedIdsProvider = StateProvider<Set<String?>>(
-  (ref) {
-    return {};
-  }
-);
 
 // 画面全体を定義
 class Root extends ConsumerWidget {
@@ -36,70 +31,64 @@ class Root extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref)  {
 
-    // ラジオボタンIDに合わせて画面を変化
-    final radioId = ref.watch(radioIdProvider);
-    // チェックボックスIDたちに合わせて画面を変化
-    final checkedIds = ref.watch(checkdedIdsProvider);
- 
-    // ラジオボタンを押された時の関数
-    void onChangedRadio(String? id) {
-      ref.read(radioIdProvider.notifier).state = id;
-    }
+    // パーセント
+    final percent = ref.watch(percentProvider);
 
-    // チェックボックスを押された時の関数
-    void onChangedCheckbox(String? id) {
-      final newSet = Set.of(checkedIds);
+    // 丸形のインジケーター
+    final circular = CircularPercentIndicator(
+      percent: percent,
+      backgroundColor: Colors.yellow,
+      progressColor: Colors.green,
+      radius: 60,
+      lineWidth: 20,
+      center: Text('${percent * 100}%'),
+      animation: true,
+      animationDuration: 200,
+      animateFromLastPercent: true,
+    );
 
-      if (newSet.contains(id)) {
-        // すでにチェックされていたら取り除く
-        newSet.remove(id);
-      } else {
-        // まだチェックされていなければ追加
-        newSet.add(id);
-      }
-      ref.read(checkdedIdsProvider.notifier).state = newSet;
-    }
+    // 棒型のインジケーター
+    final linear = LinearPercentIndicator(
+      percent: percent,
+      backgroundColor: Colors.black,
+      progressColor: Colors.amber,
+      alignment: MainAxisAlignment.center,
+      lineHeight: 20,
+      width: 300,      
+      animation: true,
+      animationDuration: 200,
+      animateFromLastPercent: true,
 
-    // ボタンたちを定義する
-    final col = Column(
+    );
+
+    final col  = Column(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      spacing: 40,
       children: [
-        RadioListTile(
-          value: 'A', 
-          groupValue: radioId, 
-          onChanged: onChangedRadio,
-          title: const Text('ラジオボタンA'),
-        ),        RadioListTile(
-          value: 'B', 
-          groupValue: radioId, 
-          onChanged: onChangedRadio,
-          title: const Text('ラジオボタンB'),
-        ),
-        RadioListTile(
-          value: 'C', 
-          groupValue: radioId, 
-          onChanged: onChangedRadio,
-          title: const Text('ラジオボタンC'),
-        ),
-        CheckboxListTile(
-          value: checkedIds.contains('A'), 
-          onChanged: (check) => onChangedCheckbox('A'),
-          title: const Text('チェックボックスA'),
-        ),        CheckboxListTile(
-          value: checkedIds.contains('B'), 
-          onChanged: (check) => onChangedCheckbox('B'),
-          title: const Text('チェックボックスB'),
-        ),
-        CheckboxListTile(
-          value: checkedIds.contains('C'), 
-          onChanged: (check) => onChangedCheckbox('C'),
-          title: const Text('チェックボックスC'),
-        ),
-
-
+        circular,
+        linear,
       ],
     );
 
-
+    // ボタンを押したときの関数
+    void onPressed(WidgetRef ref) async{
+      // 1秒間待つ
+      await Future.delayed(const Duration(seconds: 1));
+      ref.read(percentProvider.notifier).state = 0.20;
+      // １秒待つ
+      await Future.delayed(const Duration(seconds: 1));
+      ref.read(percentProvider.notifier).state = 0.40;      
+      // 1秒間待つ
+      await Future.delayed(const Duration(seconds: 1));
+      ref.read(percentProvider.notifier).state = 0.60;
+      // １秒待つ
+      await Future.delayed(const Duration(seconds: 1));
+      ref.read(percentProvider.notifier).state = 0.80;      
+      // １秒待つ
+      await Future.delayed(const Duration(seconds: 1));
+      ref.read(percentProvider.notifier).state = 1.00;
+    }
+ 
     // 画面を返す
     return Scaffold(
       body: Center(
@@ -108,11 +97,10 @@ class Root extends ConsumerWidget {
           children: [
             col,
             ElevatedButton(
-              onPressed: () {
-                debugPrint(radioId);
-                debugPrint(checkedIds.toString());
+              onPressed: () => {
+                onPressed(ref),
               }, 
-              child: const Text('OK')
+              child: const Text('スタート'),
             ),
           ],
         ),
