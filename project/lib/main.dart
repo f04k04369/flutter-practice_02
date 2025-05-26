@@ -47,7 +47,7 @@ class HomePage extends StatelessWidget {
     return Scaffold(
         body: Center(
           child: Text(
-            "バナナとーっても大好き！",
+            "バナナとーってもお願いします",
             style: GoogleFonts.hachiMaruPop(
               fontSize: 50,
               fontWeight: FontWeight.w600,
