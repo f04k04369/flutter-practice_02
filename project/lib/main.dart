@@ -1,96 +1,148 @@
-import 'dart:io';
+import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:project/pack.dart';
+import 'package:project/recipe.dart';
+import 'package:project/vegetable.dart';
+import 'package:project/pack.dart';
 
 void main() {
   // ホーム画面
+  test6();
   const home = Home();
   // アプリ
   const app = MaterialApp(home: home);
   runApp(app);
 }
 
-// 馬のモデルクラス
-class Horse {
-  // 名前
-  final String name;
-  // アイコン画像
-  final String iconUri;
-  // コンストラクタ
-  Horse(this.name, this.iconUri);
+
+// レベル１（JSONを受け取る）
+void test1() async{
+  // stubをつかえるようにする
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // Json <-----Stub
+  final json = await rootBundle.loadString('assets/stub/level1.json');
+
+  // JsonMap <----JSON
+  final map = jsonDecode(json);
+
+  // 野菜でーた　<---- JsonMap
+  final data = Vegetable.fromJson(map);
+  debugPrint('データの中身は $data');
 }
 
-/// カードにしたいモデルたち
-final models = [
-  Horse('ナリタブライアン', 'saku.png'),
-  Horse('スペシャルウィーク', 'saku.png'),
-  Horse('オグリキャップ', 'saku.png'),
-  Horse('サイレンススズカ', 'saku.png'),
-  Horse('トウカイテイオー', 'saku.png'),
-];
-
-// 馬のカードウィジェット
-class HorseCard extends StatelessWidget {
-  const HorseCard({
-    super.key,
-    required this.model,
-  });
-// データが入ったモデル
-final Horse model;
-
-@override
-  Widget build(BuildContext context) {
-    // 画像
-    final img = SizedBox(
-      height: 100,
-      child: Image.asset(
-        'asset/images/${model.iconUri}',
-      ),
-    );
-
-    // 名前
-    final text = Text(
-      model.name,
-      style: const TextStyle(fontSize: 20),
-    );
-
-    // 画像と名前を縦に並べる
-    final imgAndText = Column(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: [
-        img,
-        text
-      ],
-    );
-
-    // カード部分を作るコンテナ
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.orange,
-        borderRadius: BorderRadius.circular(20),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black,
-            spreadRadius: 2,
-            blurRadius: 2,
-            offset: const Offset(0, 2),
-          )
-        ]
-      ),
-      child: imgAndText,
-    );
-  }
-}
-
-// モデル => ウィジェットに変換する関数
-Widget modelToWidget(Horse model) {
-  // ページ部分
-  return Container(
-    // カードの周りに10ずつスペースを開ける
-    padding:  const EdgeInsets.all(10),
-    // 中身はカード
-    child: HorseCard(model: model),
+// レベル１（JSONを送る）
+void test2() async{
+  // 適当な野菜のデータ
+  const data = Vegetable(
+    name: "キャベツ",
+    color: "緑",
+    season: "春"
   );
+
+    // JsonMap <----- 野菜データ
+    final map = data.toJson();
+
+    // JSON <----JsonMap
+    final json = jsonEncode(map);
+    // JSONの中身を確認する
+    debugPrint('JSONの中身は${json}');
+  
+}
+
+// レベル２（JSONを受け取る）
+void test3() async{
+  // stubをつかえるようにする
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // Json <-----Stub
+  final json = await rootBundle.loadString('assets/stub/level2.json');
+
+  // JsonMap <----JSON
+  final map = jsonDecode(json);
+
+  // 野菜でーた　<---- JsonMap
+  final data = Pack.fromJson(map);
+  debugPrint('データの中身は $data');
+}
+
+// レベル２（JSONを送る）
+void test4() async{
+  // 適当な野菜のデータ
+  const content = Vegetable(
+    name: "ゴリラ",
+    color: "黒色",
+    season: "年がら年中"
+  );
+  // やさいぱっくのでーた　
+  const data = Pack(
+    size: '特大', 
+    price: 2000000, 
+    content: content
+  );
+  // JsonMap <----- 野菜データ
+  final map = data.toJson();
+
+  // JSON <----JsonMap
+  final json = jsonEncode(map);
+  // JSONの中身を確認する
+  debugPrint('JSONの中身は${json}');
+
+}
+
+// レベル３（JSONを受け取る）
+void test5() async{
+    // stubをつかえるようにする
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // Json <-----Stub
+  final json = await rootBundle.loadString('assets/stub/level3.json');
+
+  // JsonMap <----JSON
+  final map = jsonDecode(json);
+
+  // 野菜でーた　<---- JsonMap
+  final data = Recipe.fromJson(map);
+  debugPrint('データの中身は $data');
+}
+
+// レベル３（JSONを送る）
+void test6() async{
+  // 適当な野菜のデータ
+  const vegetables = [
+    Vegetable(
+      name: "ライオン",
+      color: "黒色",
+      season: "年中"
+    ),
+    Vegetable(
+      name: "トマト",
+      color: "赤色",
+      season: "年中"
+    ),
+    Vegetable(
+      name: "ジャガイモ",
+      color: "白",
+      season: "年中"
+    ),
+  ];
+  // レシピのでーた　
+  const data = Recipe(
+    title: '特大', 
+    calories: 2000000, 
+    vegetables: vegetables
+  );
+  // JsonMap <----- 野菜データ
+  final map = data.toJson();
+
+  // JSON <----JsonMap
+  final json = jsonEncode(map);
+  // JSONの中身を確認する
+  debugPrint('JSONの中身は${json}');
+
+
 }
 
 // ホーム画面
@@ -101,24 +153,10 @@ class Home extends StatelessWidget {
   Widget build(BuildContext context) {
     // 画面
 
-    final carousel = PageView.builder(
-      // カルーセルのコントローラー
-      controller: PageController(
-        viewportFraction: 0.6
-      ),
-      // カードの数　＝　モデル数
-      itemCount: models.length,
-      // モデルをウィジェットに変換する関数
-      itemBuilder: (c, i) =>  modelToWidget(models[i]),
-    );
-
     return Scaffold(
       body: Center(
         // 横長のコンテナ
         child: Container(
-          height: 200,
-          color: Colors.grey,
-          child: carousel
         ),
       ),
     );
