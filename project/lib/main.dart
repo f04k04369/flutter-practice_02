@@ -1,120 +1,126 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:project/abc_list.dart';
 
-// 自分が作った fish.dart ファイルを読み込む
-import 'package:project/fish.dart';
-
-// 自分が作った abc_list.dart ファイルを読み込む
-
-// メイン関数
 void main() {
-  const app = MaterialApp(home: Home());
-  const scope = ProviderScope(child: app);
-  runApp(scope);
+  // ホーム画面
+  const home = Home();
+  // アプリ
+  const app = MaterialApp(home: home);
+  runApp(app);
 }
 
-// 魚データの状態管理
-final fishProvider = StateProvider((ref) {
-  return const Fish(
-    name: 'マグロ',
-    size: 200,
-    price: 300,
-  );
-});
+// 馬のモデルクラス
+class Horse {
+  // 名前
+  final String name;
+  // アイコン画像
+  final String iconUri;
+  // コンストラクタ
+  Horse(this.name, this.iconUri);
+}
 
-// ABCリストの状態管理
-final abcListProvider = StateProvider((ref) {
-  return AbcList([
-    'A',
-    'B',
-    'C',
-  ]);
-});
+/// カードにしたいモデルたち
+final models = [
+  Horse('ナリタブライアン', 'saku.png'),
+  Horse('スペシャルウィーク', 'saku.png'),
+  Horse('オグリキャップ', 'saku.png'),
+  Horse('サイレンススズカ', 'saku.png'),
+  Horse('トウカイテイオー', 'saku.png'),
+];
 
-// ホーム画面
-class Home extends ConsumerWidget {
-  const Home({super.key});
+// 馬のカードウィジェット
+class HorseCard extends StatelessWidget {
+  const HorseCard({
+    super.key,
+    required this.model,
+  });
+// データが入ったモデル
+final Horse model;
 
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    // 魚データ
-    final fish = ref.watch(fishProvider);
-    // ABCリスト
-    final abcList = ref.watch(abcListProvider);
-
-    // 名前テキスト
-    final nameText = Text(
-      '名前: ${fish.name}',
+@override
+  Widget build(BuildContext context) {
+    // 画像
+    final img = SizedBox(
+      height: 100,
+      child: Image.asset(
+        'asset/images/${model.iconUri}',
+      ),
     );
 
-    // 大きさテキスト
-    final sizeText = Text(
-      '大きさ: ${fish.size} cm',
+    // 名前
+    final text = Text(
+      model.name,
+      style: const TextStyle(fontSize: 20),
     );
 
-    // 値段テキスト
-    final priceText = Text(
-      '値段: ${fish.price} 万円',
-    );
-
-    // ABCリストテキスト
-    final abcListText = Text(
-      'ABCリスト: $abcList',
-    );
-
-    // ボタン
-    final button = ElevatedButton(
-      onPressed: () => onPressed(ref),
-      child: const Text('変更する'),
-    );
-
-    // 縦に並べるカラム
-    final column = Column(
+    // 画像と名前を縦に並べる
+    final imgAndText = Column(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
-        nameText,
-        sizeText,
-        priceText,
-        abcListText,
-        button,
+        img,
+        text
       ],
     );
 
-    // 画面の真ん中にカラムを置く
-    return Scaffold(
-      body: Center(
-        child: column,
+    // カード部分を作るコンテナ
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.orange,
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black,
+            spreadRadius: 2,
+            blurRadius: 2,
+            offset: const Offset(0, 2),
+          )
+        ]
       ),
+      child: imgAndText,
     );
   }
+}
 
-  // ボタンを押したときの関数
-  void onPressed(WidgetRef ref) {
-    // 今画面に出ている魚
-    final fish = ref.read(fishProvider);
+// モデル => ウィジェットに変換する関数
+Widget modelToWidget(Horse model) {
+  // ページ部分
+  return Container(
+    // カードの周りに10ずつスペースを開ける
+    padding:  const EdgeInsets.all(10),
+    // 中身はカード
+    child: HorseCard(model: model),
+  );
+}
 
-    // 入れ物ごと変えた 新しい魚
-    final newFish = fish.copyWith(
-      // 値段は 500 にする
-      price: 300,
+// ホーム画面
+class Home extends StatelessWidget { 
+  const Home({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    // 画面
+
+    final carousel = PageView.builder(
+      // カルーセルのコントローラー
+      controller: PageController(
+        viewportFraction: 0.6
+      ),
+      // カードの数　＝　モデル数
+      itemCount: models.length,
+      // モデルをウィジェットに変換する関数
+      itemBuilder: (c, i) =>  modelToWidget(models[i]),
     );
 
-    // 画面を変更する
-    ref.read(fishProvider.notifier).state = newFish;
-
-    // --- --- --- ---
-
-    // 今画面に出ているABCリスト
-    final abcList = ref.read(abcListProvider);
-
-    // 入れ物ごと変えた 新しいABCリスト
-    final newAbcList = abcList.copyWith(
-      // D を追加する
-      values: abcList.values + ['D'],
+    return Scaffold(
+      body: Center(
+        // 横長のコンテナ
+        child: Container(
+          height: 200,
+          color: Colors.grey,
+          child: carousel
+        ),
+      ),
     );
-
-    // 画面を変更する
-    ref.read(abcListProvider.notifier).state = newAbcList;
   }
 }
