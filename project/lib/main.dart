@@ -7,6 +7,22 @@ import 'package:google_fonts/google_fonts.dart';
 
 
 void main() {
+  const flavor = String.fromEnvironment('flavor');
+
+  if(flavor == 'dev') {
+    // ここはdevのときだけ
+  }
+
+    if(flavor == 'stg') {
+    // ここはstgのときだけ
+  }
+
+  if(flavor == 'prd') {
+    // ここはprdのときだけ
+    debugPrint('これはprdだよ');
+  }
+
+
   // OFL を守るために このコードが必要
   LicenseRegistry.addLicense(() async* {
     final license = await rootBundle.loadString(
