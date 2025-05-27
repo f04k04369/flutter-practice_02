@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:project/accordion.dart';
 
 
 void main() {
@@ -60,15 +61,42 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final column = Column(
+      children: [
+        // さくアコーディオン
+        Accordion(
+          headColor: Colors.orange, 
+          bodyColor: Colors.orange.shade200, 
+          title: 'バナナ', 
+          imageName: 'assets/images/saku.png'
+        ),
+
+        Accordion(
+          headColor: Colors.red, 
+          bodyColor: Colors.red.shade200, 
+          title: 'リンゴ', 
+          imageName: 'assets/images/saku.png'
+        ),
+        Accordion(
+          headColor: Colors.green, 
+          bodyColor: Colors.green.shade200, 
+          title: 'めろん', 
+          imageName: 'assets/images/saku.png'
+        ),
+        Accordion(
+          headColor: Colors.purple, 
+          bodyColor: Colors.purple.shade200, 
+          title: 'ブドウ', 
+          imageName: 'assets/images/saku.png'
+        ),
+
+      ]
+    );
+    
+    // 画面
     return Scaffold(
-        body: Center(
-          child: Text(
-            "バナナとーってもお願いします",
-            style: GoogleFonts.hachiMaruPop(
-              fontSize: 50,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
+        body: SingleChildScrollView(
+          child: column,
         ),
       );
   }
