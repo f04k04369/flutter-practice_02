@@ -5,9 +5,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:project/accordion.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 
 
-void main() {
+void main () async {
+WidgetsFlutterBinding.ensureInitialized();
+await Firebase.initializeApp(
+  options: DefaultFirebaseOptions.currentPlatform,
+);
+
   const flavor = String.fromEnvironment('flavor');
 
   if(flavor == 'dev') {
@@ -89,8 +97,16 @@ class HomePage extends StatelessWidget {
           title: 'ブドウ', 
           imageName: 'assets/images/saku.png'
         ),
-
-      ]
+        ElevatedButton(
+          onPressed:  () {
+              // Firebase アナリティクスを使うコード 2
+              FirebaseAnalytics.instance.logEvent(
+                name: 'ボタンが押されました',
+              ); 
+          },
+          child: const Text('ボタン'),
+        ),
+      ],
     );
     
     // 画面
