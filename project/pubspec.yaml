@@ -8,6 +8,8 @@ environment:
   sdk: ^3.7.2
 
 dependencies:
+  firebase_auth:
+  google_sign_in:
   firebase_analytics:
   google_fonts:
   freezed_annotation: ^2.4.1

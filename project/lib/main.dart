@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:project/accordion.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:project/service.dart';
 import 'firebase_options.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 
@@ -104,7 +105,15 @@ class HomePage extends StatelessWidget {
                 name: 'ボタンが押されました',
               ); 
           },
-          child: const Text('ボタン'),
+          child: const Text('アナリティクス計測ボタン'),
+        ),
+        ElevatedButton(
+          onPressed:  () async{
+              // サービスクラスを呼び出す
+              final service = AuthService();
+              await service.signIn();
+          },
+          child: const Text('サインイン'),
         ),
       ],
     );
