@@ -11,6 +11,8 @@
     "-d",
     "chrome",
     "--dart-define-from-file=scripts/flavors/dev.json",
+    "--web-port",
+    "5000",
    ]
   },
   {
@@ -23,6 +25,9 @@
     "-d",
     "chrome",
     "--dart-define-from-file=scripts/flavors/stg.json",
+    "--web-port",
+    "5000",
+
    ]
   },
   {
