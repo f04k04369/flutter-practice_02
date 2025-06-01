@@ -8,6 +8,7 @@ environment:
   sdk: ^3.7.2
 
 dependencies:
+  device_preview_minus:
   firebase_auth:
   google_sign_in:
   firebase_analytics:
