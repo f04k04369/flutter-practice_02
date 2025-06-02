@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-// Stack, Positioned, Align の練習
+// 右上にはみ出すように見える Widget
 
 void main() {
   const app = MyApp();
@@ -14,21 +14,17 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const MaterialApp(
-      // 画面
       home: Scaffold(
-        // 真ん中
         body: Center(
-          // スタック練習
-          child: MyStack(),
+          child: ExampleOverflow(),
         ),
       ),
     );
   }
 }
 
-// スタックの練習
-class MyStack extends StatelessWidget {
-  const MyStack({super.key});
+class ExampleOverflow extends StatelessWidget {
+  const ExampleOverflow({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -38,22 +34,22 @@ class MyStack extends StatelessWidget {
     final stack = Stack(
       clipBehavior: Clip.none,
       children: [
-        // Positioned
-        Positioned(
-          left: 100, // 左から 100
-          bottom: 200, // 下から 200
-          width: 120, // 横幅 120
-          height: 50, // 高さ 50
-          child: Container(color: Colors.blue),
+        // 真ん中の Widget
+        Container(
+          margin: const EdgeInsets.all(40),
+          color: Colors.blue,
         ),
 
-        // Align
+        // 右上の Widget
         Align(
-          alignment: const Alignment(0.5, 0.5),
+          alignment: Alignment.topRight,
           child: Container(
-            width: 80, // 横幅 80
-            height: 80, // 高さ 80
-            color: Colors.red,
+            width: 80,
+            height: 80,
+            decoration: const BoxDecoration(
+              color: Colors.red,
+              shape: BoxShape.circle,
+            ),
           ),
         ),
       ],
@@ -63,8 +59,8 @@ class MyStack extends StatelessWidget {
     // スタックの大きさと色
     //
     return Container(
-      width: 500,
-      height: 500,
+      width: 300,
+      height: 300,
       color: Colors.yellow,
       child: stack,
     );
