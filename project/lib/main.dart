@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:project/lemon_dialog.dart';
+import 'package:project/pineapple_dialog.dart';
 
 // Stack, Positioned, Align の練習
 
@@ -13,60 +15,36 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      // 画面
-      home: Scaffold(
-        // 真ん中
-        body: Center(
-          // スタック練習
-          child: MyStack(),
-        ),
-      ),
-    );
+    return const MaterialApp(home: HomePage()
+  );
   }
 }
 
-// スタックの練習
-class MyStack extends StatelessWidget {
-  const MyStack({super.key});
+class HomePage extends StatelessWidget {
+  const HomePage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    //
-    // スタック
-    //
-    final stack = Stack(
-      clipBehavior: Clip.none,
-      children: [
-        // Positioned
-        Positioned(
-          left: 100, // 左から 100
-          bottom: 200, // 下から 200
-          width: 120, // 横幅 120
-          height: 50, // 高さ 50
-          child: Container(color: Colors.blue),
-        ),
+    return Scaffold(
+      body: Center(
+        child: ElevatedButton(
+          onPressed: () async {
+            final answer = await showDialog(
+              context: context, 
+              builder: (_) => const LemonDialog()
+            );
 
-        // Align
-        Align(
-          alignment: const Alignment(0.5, 0.5),
-          child: Container(
-            width: 80, // 横幅 80
-            height: 80, // 高さ 80
-            color: Colors.red,
-          ),
-        ),
-      ],
-    );
+            debugPrint(answer);
 
-    //
-    // スタックの大きさと色
-    //
-    return Container(
-      width: 500,
-      height: 500,
-      color: Colors.yellow,
-      child: stack,
+            if(!context.mounted) return;
+            showDialog(
+              context: context, 
+              builder: (_) => const PineappleDialog(),
+            );
+          }, 
+          child: const Text('開く'),
+        ),
+      ),
     );
   }
 }
