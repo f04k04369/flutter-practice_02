@@ -1,49 +1,45 @@
 import 'package:flutter/material.dart';
-import 'package:project/lemon_dialog.dart';
-import 'package:project/pineapple_dialog.dart';
-
-// Stack, Positioned, Align の練習
+import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:project/widgets.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 void main() {
   const app = MyApp();
-  runApp(app);
+  const scope = ProviderScope(child: app);
+  runApp(scope);
 }
 
-// アプリ
+/// アプリ本体
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(home: HomePage()
-  );
+    return const MaterialApp(
+      home: HomePage(),
+    );
   }
 }
 
-class HomePage extends StatelessWidget {
+/// ホーム画面
+class HomePage extends HookWidget {
   const HomePage({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final controller = useTextEditingController();
+
     return Scaffold(
-      body: Center(
-        child: ElevatedButton(
-          onPressed: () async {
-            final answer = await showDialog(
-              context: context, 
-              builder: (_) => const LemonDialog()
-            );
-
-            debugPrint(answer);
-
-            if(!context.mounted) return;
-            showDialog(
-              context: context, 
-              builder: (_) => const PineappleDialog(),
-            );
-          }, 
-          child: const Text('開く'),
-        ),
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          // ドリンクを表示
+          const DrinkText(),
+          // ドリンクを編集
+          DrinkTextField(controller: controller),
+          // ドリンクを保存
+          DrinkSaveButton(controller: controller),
+        ],
       ),
     );
   }

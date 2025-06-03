@@ -8,6 +8,7 @@ environment:
   sdk: ^3.7.2
 
 dependencies:
+  shared_preferences:
   flutter_hooks:
   envied:
   device_preview_minus:
