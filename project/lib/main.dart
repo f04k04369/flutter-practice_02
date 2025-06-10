@@ -1,9 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:project/widgets.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:project/service.dart';
+import 'package:project/realtime.dart';
+import 'package:project/firebase_option.dart';
 
-void main() {
+void main() async {
+  // Firebase の準備
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+
   const app = MyApp();
   const scope = ProviderScope(child: app);
   runApp(scope);
@@ -22,26 +30,62 @@ class MyApp extends StatelessWidget {
 }
 
 /// ホーム画面
-class HomePage extends HookWidget {
+class HomePage extends StatelessWidget {
   const HomePage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final controller = useTextEditingController();
+    /* CRUD の C */
+    final c = ElevatedButton(
+      onPressed: () {
+        final service = FirestoreService();
+        service.create();
+      },
+      child: const Text('Create 作成'),
+    );
+
+    /* CRUD の R */
+    final r = ElevatedButton(
+      onPressed: () {
+        final service = FirestoreService();
+        service.read();
+      },
+      child: const Text('Read 読み出し'),
+    );
+
+    /* CRUD の U */
+    final u = ElevatedButton(
+      onPressed: () {
+        final service = FirestoreService();
+        service.update();
+      },
+      child: const Text('Update 変更'),
+    );
+
+    /* CRUD の D */
+    final d = ElevatedButton(
+      onPressed: () {
+        final service = FirestoreService();
+        service.delete();
+      },
+      child: const Text('Delete 削除'),
+    );
 
     return Scaffold(
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          // ドリンクを表示
-          const DrinkText(),
-          // ドリンクを編集
-          DrinkTextField(controller: controller),
-          // ドリンクを保存
-          DrinkSaveButton(controller: controller),
-        ],
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            // J-POPの曲数
+            const JpopCount(),
+            // ボタンたち
+            c,
+            r,
+            u,
+            d,
+          ],
+        ),
       ),
     );
   }
 }
-
