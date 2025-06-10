@@ -1,20 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:project/service.dart';
-import 'package:project/realtime.dart';
-import 'package:project/firebase_option.dart';
+import 'package:project/mytimer.dart';
+import 'package:intl/intl.dart';
 
-void main() async {
-  // Firebase の準備
-  WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
-
+void main() {
   const app = MyApp();
-  const scope = ProviderScope(child: app);
-  runApp(scope);
+  runApp(app);
 }
 
 /// アプリ本体
@@ -35,57 +26,87 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    /* CRUD の C */
-    final c = ElevatedButton(
-      onPressed: () {
-        final service = FirestoreService();
-        service.create();
-      },
-      child: const Text('Create 作成'),
-    );
-
-    /* CRUD の R */
-    final r = ElevatedButton(
-      onPressed: () {
-        final service = FirestoreService();
-        service.read();
-      },
-      child: const Text('Read 読み出し'),
-    );
-
-    /* CRUD の U */
-    final u = ElevatedButton(
-      onPressed: () {
-        final service = FirestoreService();
-        service.update();
-      },
-      child: const Text('Update 変更'),
-    );
-
-    /* CRUD の D */
-    final d = ElevatedButton(
-      onPressed: () {
-        final service = FirestoreService();
-        service.delete();
-      },
-      child: const Text('Delete 削除'),
-    );
-
     return Scaffold(
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            // J-POPの曲数
-            const JpopCount(),
-            // ボタンたち
-            c,
-            r,
-            u,
-            d,
-          ],
-        ),
+      // 画面上に マイウィジェット
+      appBar: AppBar(
+        title: const MyWidget(),
+      ),
+      // 画面真ん中に 手作りタイマー
+      body: const Center(
+        child: MyTimer(),
       ),
     );
+  }
+}
+
+class MyWidget extends StatelessWidget {
+  const MyWidget({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+
+    final timeA = DateTime.parse('2012-03-04T05:06:07.008z');
+    final timeB = DateTime.parse('2012-03-04T14:06:07.008+09:00');
+
+    final timeC = DateTime.utc(2012, 3, 4, 5, 6, 7, 8);
+    // 数値 - 日本 (ローカル)
+    final timeD = DateTime(2012, 3, 4, 14, 6, 7, 8);
+    // 現在時刻 - イギリス (基準時刻)
+    final timeE = DateTime.timestamp();
+    // 現在時刻 - 日本 (ローカル)
+    final timeF = DateTime.now();
+
+    // 4分33秒
+    const durA = Duration(
+      minutes: 4,
+      seconds: 33,
+    );
+    // 足し算
+    final timeG = DateTime(2012, 3, 4);
+    const durB = Duration(days: 5);
+    final timeH = timeG.add(durB);
+
+    // 引き算
+    final timeI = DateTime(2061, 7, 28);
+    final timeJ = DateTime(1986, 2, 9);
+    final durC = timeI.difference(timeJ);
+
+    // 比べる
+    final timeK = DateTime.now();
+    final timeL = DateTime(2025, 1, 1);
+    final compared = timeK.compareTo(timeL);
+
+    if (compared < 0) {
+      debugPrint('今は 2025-1-1 よりも前です');
+    }
+    if (compared == 0) {
+      debugPrint('今は 2025-1-1 00:00:00 ちょうどです');
+    }
+    if (compared > 0) {
+      debugPrint('今は 2025-1-1 よりも後です');
+    }
+
+    // 見やすく整える
+    final f = DateFormat('yyyyねん Mがつ dにち HHじ mmふん');
+    // 表示したい日付を 1つ 選ぶ --> timeD
+    final displayTime = f.format(timeD);
+
+    /* 全ての中身を確認 */
+    debugPrint('時刻A: $timeA');
+    debugPrint('時刻B: $timeB');
+    debugPrint('時刻C: $timeC');
+    debugPrint('時刻D: $timeD');
+    debugPrint('時刻E: $timeE');
+    debugPrint('時刻F: $timeF');
+    debugPrint('時刻G: $timeG');
+    debugPrint('時刻H: $timeH');
+    debugPrint('時刻I: $timeI');
+    debugPrint('時刻J: $timeJ');
+
+    debugPrint('時間A: $durA');
+    debugPrint('時間B: $durB');
+    debugPrint('時間C: $durC');
+
+    return Text(displayTime);
   }
 }
